@@ -5,8 +5,25 @@
 > Added support for manager structure. Please make sure you have Managers populated in Entra AD.
 >
 > Please archive previous csv files, before running new scripts as csv files structure has changed.
+>
+> **NEW**: Python implementation available for unattended/automated execution! See [PYTHON_SETUP.md](PYTHON_SETUP.md) for details.
 
 This report is using data from Purview Audit log and Entra ID exports that get saved into two CSV files. The first csv file is storing Copilot Interaction events and other csv is exporting user details (Display Name, UPN, Position, City, Country) for users that have M365 copilot license assigned. Power BI report is reading data from those these two files and can display users **Display names** or **anonymize** them. Report contains Overall and Adoption pages that allow M365 Champs to monitor behavior of M365 Copilot licensed users.
+
+## Implementation Options
+
+You can collect the audit data using either:
+
+1. **PowerShell Scripts** (Interactive - Original implementation)
+   - `Audit-Get-Users.ps1` - Retrieves user information
+   - `Audit-Get-Events.ps1` - Retrieves Copilot interaction events
+   - See instructions below for PowerShell usage
+
+2. **Python Script** (Unattended - NEW!)
+   - `copilot_audit.py` - Consolidated script for automated execution
+   - Suitable for scheduled tasks and continuous integration
+   - See [PYTHON_SETUP.md](PYTHON_SETUP.md) for detailed setup and usage
+   - Includes `Setup-AzureAppRegistration.ps1` for easy Azure AD app setup
 ### Overall report
 ![screenshot](/img/HasCopilot.png)
 ### Agents usage
