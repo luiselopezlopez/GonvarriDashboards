@@ -108,7 +108,7 @@ After running successfully, you'll find these files in the output directory:
 3. Name: "Copilot Audit Data Collection"
 4. Trigger: Daily (or your preferred schedule)
 5. Action: Start a program
-   - Program: `python.exe` (or full path: `C:\Python39\python.exe`)
+   - Program: `python.exe` (or find your Python path: `where python`)
    - Arguments: `copilot_audit.py`
    - Start in: `C:\path\to\GonvarriDashboards`
 6. Finish

@@ -74,8 +74,12 @@ class CopilotAuditClient:
         self.events_csv_path = self.output_dir / "Copilot_Events.csv"
         self.log_file_path = self.output_dir / "AuditScriptLog.txt"
         
-        # Copilot SKU IDs (commercial)
-        self.copilot_sku_ids = ["639dec6b-bb19-468b-871c-c5c441c4b0cb"]
+        # Copilot SKU IDs - load from environment or use default (commercial)
+        sku_ids_env = os.getenv("COPILOT_SKU_IDS", "")
+        if sku_ids_env:
+            self.copilot_sku_ids = [sid.strip() for sid in sku_ids_env.split(",") if sid.strip()]
+        else:
+            self.copilot_sku_ids = ["639dec6b-bb19-468b-871c-c5c441c4b0cb"]
         
         # Initialize MSAL app
         self.app = ConfidentialClientApplication(
@@ -292,23 +296,28 @@ class CopilotAuditClient:
         Get the timestamp of the last event from the CSV file
         
         Returns:
-            Last event timestamp or 365 days ago if file doesn't exist
+            Last event timestamp or configured days ago if file doesn't exist
         """
         if not self.events_csv_path.exists():
-            return datetime.utcnow() - timedelta(days=365)
+            # Default lookback period (configurable via environment)
+            lookback_days = int(os.getenv("AUDIT_LOOKBACK_DAYS", "90"))
+            return datetime.utcnow() - timedelta(days=lookback_days)
         
         try:
             with open(self.events_csv_path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
+                reader = csv.reader(f)
+                lines = list(reader)
                 if len(lines) > 1:  # More than just header
-                    last_line = lines[-1]
+                    last_row = lines[-1]
                     # Extract timestamp from first field (format: dd-MMM-yyyy HH:mm:ss)
-                    timestamp_str = last_line.split(',')[0].strip('"')
+                    timestamp_str = last_row[0]
                     return datetime.strptime(timestamp_str, '%d-%b-%Y %H:%M:%S')
         except Exception as e:
             logger.warning(f"Could not parse last event timestamp: {e}")
         
-        return datetime.utcnow() - timedelta(days=365)
+        # Default lookback period (configurable via environment)
+        lookback_days = int(os.getenv("AUDIT_LOOKBACK_DAYS", "90"))
+        return datetime.utcnow() - timedelta(days=lookback_days)
     
     def _parse_copilot_event(self, record: Dict) -> Dict:
         """
@@ -459,7 +468,8 @@ class CopilotAuditClient:
             # Note: The Management API works differently than Search-UnifiedAuditLog
             # We need to list content blobs and download them
             total_count = 0
-            interval_minutes = 1440  # 24 hours
+            # Configurable interval minutes (default 24 hours)
+            interval_minutes = int(os.getenv("AUDIT_INTERVAL_MINUTES", "1440"))
             current_start = start_date
             
             results = []

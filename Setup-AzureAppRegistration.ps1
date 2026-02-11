@@ -8,7 +8,7 @@ Write-Host "=" * 60
 # Check if Microsoft Graph PowerShell module is installed
 $module = Get-Module -ListAvailable | Where-Object { $_.Name -eq 'Microsoft.Graph' }
 
-if ($module -eq $null) {
+if ($null -eq $module) {
     try {
         Write-Host "Installing Microsoft.Graph module..." -ForegroundColor Yellow
         Install-Module -Name Microsoft.Graph -Force -AllowClobber -Scope CurrentUser
@@ -218,6 +218,14 @@ AZURE_CLIENT_SECRET=$clientSecret
 # Default: 639dec6b-bb19-468b-871c-c5c441c4b0cb (Microsoft 365 Copilot)
 # GCC environments: a920a45e-67da-4a1a-b408-460d7a2453ce
 # COPILOT_SKU_IDS=639dec6b-bb19-468b-871c-c5c441c4b0cb
+
+# Optional: Audit log lookback period in days (default: 90)
+# Used when no previous events file exists
+# AUDIT_LOOKBACK_DAYS=90
+
+# Optional: Audit interval in minutes (default: 1440 = 24 hours)
+# Smaller intervals for high-volume tenants, larger for low-volume
+# AUDIT_INTERVAL_MINUTES=1440
 "@
 
 try {
@@ -245,6 +253,14 @@ AZURE_CLIENT_SECRET=your-client-secret-here
 # Default: 639dec6b-bb19-468b-871c-c5c441c4b0cb (Microsoft 365 Copilot)
 # GCC environments: a920a45e-67da-4a1a-b408-460d7a2453ce
 # COPILOT_SKU_IDS=639dec6b-bb19-468b-871c-c5c441c4b0cb
+
+# Optional: Audit log lookback period in days (default: 90)
+# Used when no previous events file exists
+# AUDIT_LOOKBACK_DAYS=90
+
+# Optional: Audit interval in minutes (default: 1440 = 24 hours)
+# Smaller intervals for high-volume tenants, larger for low-volume
+# AUDIT_INTERVAL_MINUTES=1440
 "@
 
 try {

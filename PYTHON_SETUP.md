@@ -82,6 +82,7 @@ python copilot_audit.py --output-dir /path/to/output
 
 The script requires the following environment variables in a `.env` file:
 
+#### Required Variables
 ```env
 AZURE_TENANT_ID=your-tenant-id-here
 AZURE_CLIENT_ID=your-client-id-here
@@ -90,14 +91,37 @@ AZURE_CLIENT_SECRET=your-client-secret-here
 
 These are automatically created by the `Setup-AzureAppRegistration.ps1` script.
 
+#### Optional Configuration Variables
+
+**Copilot SKU IDs** (for GCC or custom SKUs):
+```env
+COPILOT_SKU_IDS=639dec6b-bb19-468b-871c-c5c441c4b0cb
+```
+Default: `639dec6b-bb19-468b-871c-c5c441c4b0cb` (Microsoft 365 Copilot - Commercial)  
+GCC environments: `a920a45e-67da-4a1a-b408-460d7a2453ce`
+
+**Audit Lookback Days** (initial data collection):
+```env
+AUDIT_LOOKBACK_DAYS=90
+```
+Default: 90 days  
+Determines how far back to look when no previous events file exists.
+
+**Audit Interval Minutes** (batching for API calls):
+```env
+AUDIT_INTERVAL_MINUTES=1440
+```
+Default: 1440 (24 hours)  
+Smaller values (e.g., 720 = 12 hours) for high-volume tenants to avoid API throttling.
+
 ### Copilot SKU IDs
 
 The script includes the default Copilot SKU ID for commercial tenants:
 - `639dec6b-bb19-468b-871c-c5c441c4b0cb` (Microsoft 365 Copilot)
 
-For GCC environments, modify the script or add to your `.env`:
+For GCC environments or multiple SKUs, add to your `.env`:
 ```env
-COPILOT_SKU_IDS=a920a45e-67da-4a1a-b408-460d7a2453ce
+COPILOT_SKU_IDS=a920a45e-67da-4a1a-b408-460d7a2453ce,another-sku-id
 ```
 
 ## Output Files
