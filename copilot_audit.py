@@ -363,7 +363,9 @@ class CopilotAuditClient:
             
             # Additional app host checks
             app_host = copilot_event_data.get("AppHost", "")
-            if "https://teams.microsoft.com/" in context_id:
+            # Note: context_id is from Microsoft audit logs, not user input
+            teams_url_pattern = "https://teams.microsoft.com/"
+            if context_id and context_id.startswith(teams_url_pattern):
                 copilot_app = "Teams"
             elif app_host == "bizchat":
                 copilot_app = "Copilot for M365 Chat"
@@ -386,9 +388,10 @@ class CopilotAuditClient:
                     agent_name = app_identity.split("-")[-1]
             
             # Determine location
+            # Note: context_id is from Microsoft audit logs, not user input
             if "/sites/" in context_id:
                 copilot_location = "SharePoint Online"
-            elif "https://teams.microsoft.com/" in context_id:
+            elif context_id and context_id.startswith("https://teams.microsoft.com/"):
                 if "ctx=channel" in context_id:
                     copilot_location = "Teams Channel"
                 else:
