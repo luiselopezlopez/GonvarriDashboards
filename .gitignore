@@ -1,5 +1,5 @@
 # Environment variables
-.env
+#.env
 
 # Python
 __pycache__/
@@ -29,7 +29,7 @@ env/
 ENV/
 env.bak/
 venv.bak/
-
+.venv/
 # Output files
 output/
 *.csv
